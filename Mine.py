@@ -1,8 +1,8 @@
-
 from math import floor
 from random import randint
 
 import pygame
+from pygame.locals import QUIT, MOUSEBUTTONDOWN
 
 WIDTH = 20
 HEIGHT = 15
