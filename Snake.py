@@ -1,4 +1,6 @@
 import random
+import sys
+
 import pygame
 from pygame import mixer
 from pygame.locals import QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_UP, \
@@ -65,7 +67,7 @@ def paint(message):
         SURFACE.blit(message, (150, 300))
 
     smallfont = pygame.font.SysFont(None, 36)
-    message_score = smallfont.render("SCORE = {}".format(len(SNAKE)), True, (0, 255, 255))
+    message_score = smallfont.render("SCORE = "f'{len(SNAKE)}', True, (0, 255, 255))
     SURFACE.blit(message_score, (250, 0))
 
     pygame.display.update()
