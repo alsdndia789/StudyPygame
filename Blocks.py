@@ -101,7 +101,7 @@ def main():
 
             if len(BLOCKS) == 0:
                 SURFACE.blit(mess_clear, (200, 400))
-                ##게임이 끝나는 조건 
+                ##게임이 끝나는 조건
             for BALL in balls:
                 if BALL1.rect.centery > 800 and len(BLOCKS) > 0 and\
                         ((BALL.act != 0 and BALL.rect.centery > 800) or (BALL.act == 0 and BALL.rect.centery < 800)):
