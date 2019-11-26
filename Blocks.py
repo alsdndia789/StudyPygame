@@ -7,11 +7,12 @@ from pygame.locals import QUIT, KEYDOWN, K_LEFT, K_RIGHT, Rect
 
 class Block:
 
-    def __init__(self, col, rect, speed=0):
+    def __init__(self, col, rect, speed=0, act=0):
         self.col = col
         self.rect = rect
         self.speed = speed
         self.dir = random.randint(-45, 45) + 270
+        self.act = act
 
     def move(self):
         self.rect.centerx += math.cos(math.radians(self.dir)) * self.speed
@@ -24,9 +25,9 @@ class Block:
             pygame.draw.ellipse(SURFACE, self.col, self.rect)
 
 
-def move(self, flag=0):
+def move(self):
     global BLOCKS
-    if flag == 1:
+    if self.act != 0:
         if self.rect.centery < 1000:
             self.move()
 
@@ -57,10 +58,12 @@ BLOCKS = []
 ITEMS = []
 balls = []
 PADDLE = Block((242, 242, 0), Rect(300, 700, 100, 30))
+BALL1 = Block((242, 242, 0), Rect(300, 400, 20, 20), 10, 1)
 while len(balls) < 4:
-    balls.append(Block((242, 242, 0),\
-                 Rect(random.randint(100, 500), random.randint(100, 500), 20, 20), 10))
-BALL1 = Block((242, 242, 0), Rect(300, 400, 20, 20), 10)
+    balls.append(Block((242, 242, 0),
+                       Rect(random.randint(100, 500), random.randint(100, 300),
+                            20, 20), 10, 0))
+
 
 def main():
     myfont = pygame.font.SysFont(None, 80)
@@ -86,22 +89,22 @@ def main():
 
         SURFACE.fill((0, 0, 0))
         BALL1.draw()
-        move(BALL1, 1)
-
+        move(BALL1)
         for BALL in balls:
             BALL.draw()
-            if BALL1.rect.colliderect(BALL.rect):
-                BALL.draw()
+            if BALL.rect.colliderect(BALL1.rect):
+                BALL.act = 1
+            move(BALL)
         PADDLE.draw()
         for block in BLOCKS:
             block.draw()
 
-        if len(BLOCKS) == 0:
-            SURFACE.blit(mess_clear, (200, 400))
-        if BALL1.rect.centery > 800 and len(BLOCKS) > 0:
-            ## for BALL in balls:
-            ##    if BALL.rect.centery > 800
-            SURFACE.blit(mess_over, (150, 400))
+            if len(BLOCKS) == 0:
+                SURFACE.blit(mess_clear, (200, 400))
+            for BALL in balls:
+                if BALL1.rect.centery > 800 and len(BLOCKS) > 0 and\
+                        ((BALL.act != 0 and BALL.rect.centery > 800) or (BALL.act == 0 and BALL.rect.centery < 800)):
+                    SURFACE.blit(mess_over, (150, 400))
 
         pygame.display.update()
         FPSCLOCK.tick(40)
