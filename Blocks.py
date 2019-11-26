@@ -20,40 +20,33 @@ class Block:
     def draw(self):
         if self.speed == 0:
             pygame.draw.rect(SURFACE, self.col, self.rect)
-        else:
+        elif self.speed > 5:
             pygame.draw.ellipse(SURFACE, self.col, self.rect)
 
 
-def tick():
+def move(self, flag=0):
     global BLOCKS
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == KEYDOWN:
-            if event.key == K_LEFT:
-                PADDLE.rect.centerx -= 10
-            elif event.key == K_RIGHT:
-                PADDLE.rect.centerx += 10
-    if BALL.rect.centery < 1000:
-        BALL.move()
+    if flag == 1:
+        if self.rect.centery < 1000:
+            self.move()
 
-        # 블럭과 충돌
-    numblock = len(BLOCKS)
-    BLOCKS = [x for x in BLOCKS if not x.rect.colliderect(BALL.rect)]
-    # 블럭의 개수가 달라졌으면 == 공이 블럭에 맞았으면
-    if len(BLOCKS) != numblock:
-        BALL.dir *= -1
+            # 블럭과 충돌
+        numblock = len(BLOCKS)
+        BLOCKS = [x for x in BLOCKS if not x.rect.colliderect(self.rect)]
+        # 블럭의 개수가 달라졌으면 == 공이 블럭에 맞았으면
+        if len(BLOCKS) != numblock:
+            self.dir *= -1
 
-        # 유저와 충돌
-    if PADDLE.rect.colliderect(BALL.rect):
-        BALL.dir = 90 + (PADDLE.rect.centerx - BALL.rect.centerx) / PADDLE.rect.width * 80
-        # 벽과 충돌
-    if BALL.rect.centerx < 0 or BALL.rect.centerx > 600:
-        BALL.dir = 180 - BALL.dir
-    if BALL.rect.centery < 0:
-        BALL.dir = -BALL.dir
-        BALL.speed = 15
+            # 유저와 충돌
+        if PADDLE.rect.colliderect(self.rect):
+            self.dir = 90 + (PADDLE.rect.centerx - self.rect.centerx) / PADDLE.rect.width * 80
+
+            # 벽과 충돌
+        if self.rect.centerx < 0 or self.rect.centerx > 600:
+            self.dir = 180 - self.dir
+        if self.rect.centery < 0:
+            self.dir *= -1
+            self.speed = 15
 
 
 pygame.init()
@@ -61,9 +54,13 @@ pygame.key.set_repeat(5, 5)
 SURFACE = pygame.display.set_mode((600, 800))
 FPSCLOCK = pygame.time.Clock()
 BLOCKS = []
+ITEMS = []
+balls = []
 PADDLE = Block((242, 242, 0), Rect(300, 700, 100, 30))
-BALL = Block((242, 242, 0), Rect(300, 400, 20, 20), 10)
-
+while len(balls) < 4:
+    balls.append(Block((242, 242, 0),\
+                 Rect(random.randint(100, 500), random.randint(100, 500), 20, 20), 10))
+BALL1 = Block((242, 242, 0), Rect(300, 400, 20, 20), 10)
 
 def main():
     myfont = pygame.font.SysFont(None, 80)
@@ -77,17 +74,33 @@ def main():
             BLOCKS.append(Block(color, Rect(xpos * 100 + 60, ypos * 50 + 40, 80, 30)))
 
     while True:
-        tick()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == KEYDOWN:
+                if event.key == K_LEFT and PADDLE.rect.centerx > 0:
+                    PADDLE.rect.centerx -= 14
+                elif event.key == K_RIGHT and PADDLE.rect.centerx < 600:
+                    PADDLE.rect.centerx += 14
 
         SURFACE.fill((0, 0, 0))
-        BALL.draw()
+        BALL1.draw()
+        move(BALL1, 1)
+
+        for BALL in balls:
+            BALL.draw()
+            if BALL1.rect.colliderect(BALL.rect):
+                BALL.draw()
         PADDLE.draw()
         for block in BLOCKS:
             block.draw()
 
         if len(BLOCKS) == 0:
             SURFACE.blit(mess_clear, (200, 400))
-        if BALL.rect.centery > 800 and len(BLOCKS) > 0:
+        if BALL1.rect.centery > 800 and len(BLOCKS) > 0:
+            ## for BALL in balls:
+            ##    if BALL.rect.centery > 800
             SURFACE.blit(mess_over, (150, 400))
 
         pygame.display.update()
