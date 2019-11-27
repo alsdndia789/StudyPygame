@@ -95,17 +95,20 @@ def main():
             if BALL.rect.colliderect(BALL1.rect):
                 BALL.act = 1
             move(BALL)
+            if BALL.rect.centery > 800:
+                BALL.act = 0
+
         PADDLE.draw()
         for block in BLOCKS:
             block.draw()
 
-            if len(BLOCKS) == 0:
-                SURFACE.blit(mess_clear, (200, 400))
-                ##게임이 끝나는 조건
-            for BALL in balls:
-                if BALL1.rect.centery > 800 and len(BLOCKS) > 0 and\
-                        ((BALL.act != 0 and BALL.rect.centery > 800) or (BALL.act == 0 and BALL.rect.centery < 800)):
-                    SURFACE.blit(mess_over, (150, 400))
+        if len(BLOCKS) == 0:
+            SURFACE.blit(mess_clear, (200, 400))
+            ##게임이 끝나는 조건
+
+        for BALL in balls:
+            if BALL.act == 0 and BALL1.rect.centery > 800 and len(BLOCKS) > 0:
+                SURFACE.blit(mess_over, (150, 400))
 
         pygame.display.update()
         FPSCLOCK.tick(40)
