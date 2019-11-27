@@ -60,7 +60,7 @@ balls = []
 PADDLE = Block((242, 242, 0), Rect(300, 700, 100, 30))
 BALL1 = Block((242, 242, 0), Rect(300, 400, 20, 20), 10, 1)
 while len(balls) < 4:
-    balls.append(Block((242, 242, 0),
+    balls.append(Block((242, 0, 0),
                        Rect(random.randint(100, 500), random.randint(100, 300),
                             20, 20), 10, 0))
 
@@ -107,7 +107,7 @@ def main():
             ##게임이 끝나는 조건
 
         for BALL in balls:
-            if BALL.act == 0 and BALL1.rect.centery > 800 and len(BLOCKS) > 0:
+            if BALL1.rect.centery > 800 and len(BLOCKS) > 0:
                 SURFACE.blit(mess_over, (150, 400))
 
         pygame.display.update()
