@@ -73,8 +73,8 @@ class Ship(Drawable):
         self.power = 0
         self.accel = 0
         self.explode = False
-        self.image = pygame.image.load("C:/Users/User/PycharmProjects/box//image/ship.png")
-        self.bang = pygame.image.load("C:/Users/User/PycharmProjects/box//image/bang.png")
+        self.image = pygame.image.load("./image/ship.png")
+        self.bang = pygame.image.load("./image/bang.png")
 
     def draw(self):
         rotated = pygame.transform.rotate(self.image, self.theta)
@@ -90,6 +90,29 @@ class Ship(Drawable):
         self.accel *= 0.94
         self.step[X] = cos(radians(self.theta)) * self.power
         self.step[Y] = sin(radians(self.theta)) * -self.power
+        self.move()
+
+
+class Item(Drawable):
+    def __init__(self, pos, size):
+        super(Item, self).__init__(Rect(0, 0, size, size))
+        self.rect.center = pos
+        self.size = size
+        self.image = pygame.image.load("./image/Item.png")
+        self.theta = randint(0, 360)
+        self.power = 10
+        self.step[X] = cos(radians(self.theta)) * self.power
+        self.step[Y] = sin(radians(self.theta)) * -self.power
+
+    def draw(self):
+        rotated = pygame.transform.rotozoom(self.image, self.theta, self.size / 64)
+        rect = rotated.get_rect()
+        rect.center = self.rect.center
+        SURFACE.blit(rotated, rect)
+
+    def tick(self):
+        # 운석 이동
+        self.theta += 3
         self.move()
 
 
@@ -125,14 +148,15 @@ def main():
     keymap = []
     shots = []
     rocks = []
+    items = []
     ship = Ship()
     game_over = False
     score = 0
     back_x, back_y = 0, 0
     back_image = pygame.image.load("C:/Users/User/PycharmProjects/box/image/bg.png")
     back_image = pygame.transform.scale2x(back_image)
-
-    while len(shots) < 7:
+    BULLET = 5
+    while len(shots) < BULLET:
         shots.append(Shot())
 
     while len(rocks) < 4:
@@ -141,11 +165,23 @@ def main():
         if not rock.rect.colliderect(ship.rect):
             rocks.append(rock)
 
+    while len(items) < 2:
+        pos = randint(0, 800), randint(0, 800)
+        item = Item(pos, 4)
+        if not item.rect.colliderect(ship.rect):
+            items.append(item)
+
     while True:
         key_event_handler(keymap, ship)
 
         if not game_over:
             ship.tick()
+
+            for item in items:
+                item.tick()
+                if item.rect.colliderect(ship.rect):
+                    BULLET += 1
+                    items.remove(item)
 
             for rock in rocks:
                 rock.tick()
@@ -190,10 +226,15 @@ def main():
             shot.draw()
         for rock in rocks:
             rock.draw()
+        for item in items:
+            item.draw()
 
         score_str = str(score).zfill(6)
         score_image = scorefont.render(score_str, True, (0, 255, 0))
-        SURFACE.blit(score_image, (700, 10))
+        bullet_str = str("BULLET = "f'{BULLET}').zfill(1)
+        bullet_image = scorefont.render(bullet_str, True, (0, 255, 0))
+        SURFACE.blit(score_image, (600, 10))
+        SURFACE.blit(bullet_image, (400, 10))
 
         if game_over:
             if len(rocks) == 0:
