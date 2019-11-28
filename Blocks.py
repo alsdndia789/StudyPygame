@@ -97,6 +97,7 @@ def main():
             move(BALL)
             if BALL.rect.centery > 800:
                 BALL.act = 0
+                balls.remove(BALL)
 
         PADDLE.draw()
         for block in BLOCKS:
