@@ -155,9 +155,7 @@ def main():
     back_x, back_y = 0, 0
     back_image = pygame.image.load("C:/Users/User/PycharmProjects/box/image/bg.png")
     back_image = pygame.transform.scale2x(back_image)
-    BULLET = 5
-    while len(shots) < BULLET:
-        shots.append(Shot())
+    bullet = 5
 
     while len(rocks) < 4:
         pos = randint(0, 800), randint(0, 800)
@@ -165,14 +163,17 @@ def main():
         if not rock.rect.colliderect(ship.rect):
             rocks.append(rock)
 
-    while len(items) < 2:
+    while len(items) < 4:
         pos = randint(0, 800), randint(0, 800)
-        item = Item(pos, 4)
+        item = Item(pos, 6)
         if not item.rect.colliderect(ship.rect):
             items.append(item)
 
     while True:
         key_event_handler(keymap, ship)
+
+        while len(shots) < bullet:
+            shots.append(Shot())
 
         if not game_over:
             ship.tick()
@@ -180,7 +181,7 @@ def main():
             for item in items:
                 item.tick()
                 if item.rect.colliderect(ship.rect):
-                    BULLET += 1
+                    bullet += 2
                     items.remove(item)
 
             for rock in rocks:
@@ -193,6 +194,15 @@ def main():
             for shot in shots:
                 if shot.count < shot.max_count:
                     shot.tick()
+                    hit2 = None
+
+                    for item in items:
+                        if item.rect.colliderect(shot.rect):
+                            hit2 = item
+                    if hit2 is not None:
+                        bullet += 2
+                        items.remove(hit2)
+                        hit2 = None
 
                     hit = None
                     for rock in rocks:
@@ -207,6 +217,7 @@ def main():
                             rocks.append(Rock(hit.rect.center, hit.rect.width / 2))
                         if len(rocks) == 0:
                             game_over = True
+
 
                 elif not fire and K_SPACE in keymap:
                     shot.count = 0
@@ -231,7 +242,7 @@ def main():
 
         score_str = str(score).zfill(6)
         score_image = scorefont.render(score_str, True, (0, 255, 0))
-        bullet_str = str("BULLET = "f'{BULLET}').zfill(1)
+        bullet_str = str("BULLET = "f'{bullet}').zfill(1)
         bullet_image = scorefont.render(bullet_str, True, (0, 255, 0))
         SURFACE.blit(score_image, (600, 10))
         SURFACE.blit(bullet_image, (400, 10))
