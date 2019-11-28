@@ -6,7 +6,7 @@ from pygame.locals import Rect, QUIT, KEYDOWN, KEYUP, K_SPACE, K_LEFT, K_RIGHT, 
 
 pygame.init()
 pygame.key.set_repeat(5, 5)
-SURFACE = pygame.display.set_mode((600, 800))
+SURFACE = pygame.display.set_mode((800, 800))
 FPSCLOCK = pygame.time.Clock()
 X = 0
 Y = 1
@@ -48,6 +48,7 @@ class Rock(Drawable):
 
 
 class Shot(Drawable):
+    """ 총알 오브젝트 """
     def __init__(self):
         super(Shot, self).__init__(Rect(0, 0, 6, 6))
         self.count = 40
@@ -55,10 +56,12 @@ class Shot(Drawable):
         self.max_count = 40
 
     def draw(self):
+        """ 총알을 그린다 """
         if self.count < self.max_count:
             pygame.draw.rect(SURFACE, (225, 225, 0), self.rect)
 
     def tick(self):
+        """ 총알을 이동한다 """
         self.count += 1
         self.move()
 
@@ -152,7 +155,6 @@ def main():
             # 총알 이동
             fire = False
             for shot in shots:
-                shot.count = 0
                 if shot.count < shot.max_count:
                     shot.tick()
 
@@ -170,13 +172,13 @@ def main():
                         if len(rocks) == 0:
                             game_over = True
 
-                    elif not fire and K_SPACE in keymap:
-                        shot.count = 0
-                        shot.rect.center = ship.rect.center
-                        shot_x = shot.power * cos(radians(ship.theta))
-                        shot_y = shot.power * -sin(radians(ship.theta))
-                        shot.step = (shot_x, shot_y)
-                        fire = True
+                elif not fire and K_SPACE in keymap:
+                    shot.count = 0
+                    shot.rect.center = ship.rect.center
+                    shot_x = shot.power * cos(radians(ship.theta))
+                    shot_y = shot.power * -sin(radians(ship.theta))
+                    shot.step = (shot_x, shot_y)
+                    fire = True
 
         back_x = (back_x + ship.step[X] / 2) % 1600
         back_y = (back_y + ship.step[Y] / 2) % 1600
