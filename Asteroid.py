@@ -111,7 +111,6 @@ class Item(Drawable):
         SURFACE.blit(rotated, rect)
 
     def tick(self):
-        # 운석 이동
         self.theta += 3
         self.move()
 

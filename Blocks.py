@@ -90,6 +90,7 @@ def main():
         SURFACE.fill((0, 0, 0))
         BALL1.draw()
         move(BALL1)
+
         for BALL in balls:
             BALL.draw()
             if BALL.rect.colliderect(BALL1.rect):
