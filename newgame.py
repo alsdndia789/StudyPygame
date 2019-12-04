@@ -58,6 +58,7 @@ def main():
     scorefont = pygame.font.SysFont(None, 36)
     xpos = 500
     ypos = 500
+    speed = 0
 
     while True:
         for event in pygame.event.get():
@@ -65,6 +66,7 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
+                speed += 2
                 if event.key == K_LEFT:
                     moveRight = False
                     moveLeft = True
@@ -78,6 +80,7 @@ def main():
                     moveUp = False
                     moveDown = True
             if event.type == KEYUP:
+                speed = 0
                 if event.key == K_ESCAPE:
                     pygame, quit()
                     sys.exit()
@@ -95,25 +98,29 @@ def main():
         while len(items) < 10:
             items.append(item(randint(0, WIDTH), randint(0, HEIGHT)))
         for ITEM in items:
-            ITEM.dir = randint(0, 4)
+            ITEM.dir = randint(1, 4)
             ITEM.draw_item()
             ITEM.move_item()
 
         vel = 15
         if moveDown and user.bottom < HEIGHT:
+            vel += speed
             ypos += vel
         if moveUp and user.top > 0:
+            vel += speed
             ypos -= vel
         if moveLeft and user.left > 0:
+            vel += speed
             xpos -= vel
         if moveRight and user.right < WIDTH:
+            vel += speed
             xpos += vel
 
         for ITEM in items:
             if user.colliderect(ITEM):
                 items.remove(ITEM)
                 score += 10
-                size += 10
+                size += 1
 
         score_str = str(score)
         score_image = scorefont.render(score_str, True, (0, 255, 0))
