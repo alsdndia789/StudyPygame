@@ -82,7 +82,7 @@ def main():
             if event.type == KEYUP:
                 speed = 0
                 if event.key == K_ESCAPE:
-                    pygame, quit()
+                    pygame.quit()
                     sys.exit()
                 if event.key == K_LEFT:
                     moveLeft = False
