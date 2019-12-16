@@ -2,7 +2,7 @@ import sys
 from math import sqrt
 from random import randint
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_DOWN, K_SPACE
+from pygame.locals import QUIT, KEYDOWN, K_LEFT, K_RIGHT, K_DOWN, K_SPACE, K_UP
 
 BLOCK_DATA = (
     (
@@ -129,10 +129,9 @@ class Block:
             xpos = index % self.size
             ypos = index // self.size
             val = self.data[index]
-            if 0 <= ypos + self.ypos < HEIGHT and \
-                    0 <= xpos + self.xpos < WIDTH and val != 0:
-                x_pos = 25 + (xpos + self.xpos * 25)
-                y_pos = 25 + (ypos + self.ypos * 25)
+            if 0 <= ypos + self.ypos < HEIGHT and 0 <= xpos + self.xpos < WIDTH and val != 0:
+                x_pos = 25 + (xpos + self.xpos) * 25
+                y_pos = 25 + (ypos + self.ypos) * 25
                 pygame.draw.rect(SURFACE, COLORS[val], (x_pos, y_pos, 24, 24))
 
 
@@ -229,7 +228,7 @@ def main():
 
             next_x, next_y, next_t = BLOCK.xpos, BLOCK.ypos, BLOCK.turn
 
-            if key == K_SPACE:
+            if key == K_UP:
                 next_t = (next_t + 1) % 4
             elif key == K_RIGHT:
                 next_x += 1
